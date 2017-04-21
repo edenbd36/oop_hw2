@@ -13,7 +13,17 @@ public class RestaurantImpl implements Restaurant{
     private int distance;
     private Set<String> menu;
     private HashMap<Integer,Integer> rates; //(student id, rate)
-    private int avgRate=0;
+    private float avgRate=0;
+
+    private void calcAvg(){
+        if (rates.isEmpty())
+            avgRate = 0;
+        else{
+            avgRate= 0;
+            rates.values().forEach(val -> avgRate+=val);
+            avgRate /= rates.size();
+        }
+    }
 
     public RestaurantImpl(int id, String name, int distFromTech, Set<String> menu){
         this.id = id;
@@ -25,7 +35,14 @@ public class RestaurantImpl implements Restaurant{
     public int getId() {
         return id;
     }
-    public int compareTo(Restaurant o){return 1;}
+
+    @Override
+    public int compareTo(Restaurant o) {
+        RestaurantImpl other = (RestaurantImpl)o;
+        return this.id - other.id;
+    }
+
+    @Override
     public int distance(){
         return distance;
     }
@@ -40,11 +57,14 @@ public class RestaurantImpl implements Restaurant{
         return 0;
     }
 
+    @Override
     public Restaurant rate(HungryStudent s, int r) throws Restaurant.RateRangeException{
-//        if (r<0 || r>5){
-//            throw Restaurant.RateRangeException;
-//        }
-//        rates[s.id] = r;
+        if (r<0 || r>5){
+            throw new Restaurant.RateRangeException();
+        }
+        int studentId = ((HungryStudentImpl)s).getId();
+        rates.put(studentId,r);
+        calcAvg();
         return this;
     }
 
