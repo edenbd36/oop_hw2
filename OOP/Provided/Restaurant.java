@@ -21,7 +21,7 @@ public interface Restaurant extends Comparable<Restaurant> {
      * @param s - the student rating the restaurant
      * @param r - the rating
      * */
-    Restaurant rate(HungryStudent s, int r)
+    Restaurant rate(OOP.Provided.HungryStudent s, int r)
             throws RateRangeException;
 
     /**
