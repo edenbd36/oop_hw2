@@ -89,8 +89,5 @@ public class main {
         System.out.println(" ");
         System.out.println("print favoritesByRating: ");
         s1.favoritesByRating(2).stream().forEach(o -> System.out.println(((RestaurantImpl)o).getName()));
-        System.out.println(" ");
-        System.out.println("print favoritesByDistance: ");
-        s1.favoritesByDist(5).stream().forEach(o -> System.out.println(((RestaurantImpl)o).getName()));
     }
 }
