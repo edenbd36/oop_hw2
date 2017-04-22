@@ -13,14 +13,14 @@ public class RestaurantImpl implements Restaurant{
     private int distance;
     private Set<String> menu;
     private HashMap<Integer,Integer> rates; //(student id, rate)
-    private float avgRate=0;
+    private double avgRate = 0;
 
     private void calcAvg(){
         if (rates.isEmpty())
             avgRate = 0;
         else{
-            avgRate= 0;
-            rates.values().forEach(val -> avgRate+=val);
+            avgRate = 0;
+            rates.values().forEach(val -> avgRate += val);
             avgRate /= rates.size();
         }
     }
@@ -34,6 +34,10 @@ public class RestaurantImpl implements Restaurant{
     }
     public int getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -54,7 +58,7 @@ public class RestaurantImpl implements Restaurant{
 
     @Override
     public double averageRating() {
-        return 0;
+        return avgRate;
     }
 
     @Override
@@ -88,4 +92,7 @@ public class RestaurantImpl implements Restaurant{
         return str + ".";
     }
 
+    public boolean isRateByStudent(int id){
+        return rates.containsKey(id);
+    }
 }
