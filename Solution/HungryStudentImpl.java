@@ -65,29 +65,42 @@ public class HungryStudentImpl implements HungryStudent {
             return r1.compareTo(r2);
         };
         return restaurants.stream().filter(r -> r.averageRating() >= rLimit).sorted(byRate).collect(Collectors.toList());
-        }
+    }
 
-        @Override
-        public Collection<Restaurant> favoritesByDist(int dLimit) {
-            //temporary
-            return restaurants;
-        }
+    @Override
+    public Collection<Restaurant> favoritesByDist(int dLimit) {
+        Comparator<Restaurant> byDist = (r1, r2) -> {
+            int dist = r1.distance() - r2.distance();
+            if (dist != 0) return dist;
+            double rating = r1.averageRating() - r2.averageRating();
+            if (rating != 0) return ((int) rating) * (-1);
+            return r1.compareTo(r2);
+        };
+        return restaurants.stream().filter(r-> r.distance() <= dLimit).sorted(byDist).collect(Collectors.toList());
+    }
 
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Hungry student: " + name + ".").append(System.getProperty("line.separator"));
-            sb.append("Id: " + id + ".").append(System.getProperty("line.separator"));
-            sb.append("Favorites: ");
-            restaurants.stream().sorted().forEach(o-> sb.append(((RestaurantImpl)o).getName() + ", "));
-            String str = sb.toString();
-            str = str.substring(0, str.length()-2);
-            return str + ".";
-        }
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Hungry student: " + name + ".").append(System.getProperty("line.separator"));
+        sb.append("Id: " + id + ".").append(System.getProperty("line.separator"));
+        sb.append("Favorites: ");
+        restaurants.stream().sorted().forEach(o-> sb.append(((RestaurantImpl)o).getName() + ", "));
+        String str = sb.toString();
+        str = str.substring(0, str.length()-2);
+        return str + ".";
+    }
 
-        @Override
-        public int compareTo(HungryStudent o) {
-            HungryStudentImpl other = (HungryStudentImpl) o;
-            return this.id - other.id;
-        }
+    @Override
+    public int compareTo(HungryStudent o) {
+        HungryStudentImpl other = (HungryStudentImpl) o;
+        return this.id - other.id;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if (!(o instanceof HungryStudentImpl)) return false;
+        HungryStudentImpl other = (HungryStudentImpl)o;
+        return (other.getId() == id);
+    }
 }
