@@ -103,4 +103,12 @@ public class HungryStudentImpl implements HungryStudent {
         HungryStudentImpl other = (HungryStudentImpl)o;
         return (other.getId() == id);
     }
+
+    public boolean isFavorite(Restaurant r){
+        for(Restaurant res : restaurants){
+            RestaurantImpl resImp = (RestaurantImpl)res;
+            if (resImp.equals(r))return true;
+        }
+        return false;
+    }
 }
