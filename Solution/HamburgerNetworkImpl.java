@@ -3,6 +3,7 @@ package OOP.Solution;
 import OOP.Provided.HungryStudent;
 import OOP.Provided.Restaurant;
 import OOP.Provided.HamburgerNetwork;
+import com.sun.org.apache.regexp.internal.RE;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,7 +20,11 @@ public class HamburgerNetworkImpl implements HamburgerNetwork {
 
     @Override
     public HungryStudent joinNetwork(int id, String name) throws HungryStudent.StudentAlreadyInSystemException {
-        return null;
+        if ((students.containsKey(id)))
+            throw new HungryStudent.StudentAlreadyInSystemException();
+        HungryStudentImpl s = new HungryStudentImpl(id, name);
+        students.put(id,s);
+        return s;
     }
 
     @Override
@@ -50,7 +55,8 @@ public class HamburgerNetworkImpl implements HamburgerNetwork {
 
     @Override
     public Restaurant getRestaurant(int id) throws Restaurant.RestaurantNotInSystemException {
-        return null;
+        if (!(restaurants.containsKey(id))) throw new Restaurant.RestaurantNotInSystemException();
+        return restaurants.get(id);
     }
 
     @Override
@@ -72,7 +78,20 @@ public class HamburgerNetworkImpl implements HamburgerNetwork {
 
     @Override
     public Collection<Restaurant> favoritesByRating(HungryStudent s) throws HungryStudent.StudentNotInSystemException {
-        return null;
+        if (!students.containsKey(((HungryStudentImpl)s).getId())) throw new HungryStudent.StudentNotInSystemException();
+        Comparator<Restaurant> byRate = (r1, r2) -> {
+            double rating = r1.averageRating() - r2.averageRating();
+            if (rating != 0) return ((int) rating) * (-1);
+            int dist = r1.distance() - r2.distance();
+            if (dist != 0) return dist;
+            return r1.compareTo(r2);
+        };
+        LinkedHashSet<Restaurant> res = new LinkedHashSet<>();
+        Collection<HungryStudent> friends = s.getFriends();
+        friends.stream()
+                .sorted(Comparator.naturalOrder())
+                .forEachOrdered(stu-> res.addAll(stu.favorites().stream().sorted(byRate).collect(Collectors.toList())));
+        return res;
     }
 
     @Override
@@ -120,5 +139,36 @@ public class HamburgerNetworkImpl implements HamburgerNetwork {
 
     public int numberOfRestaurants (){
         return restaurants.size();
+    }
+
+    public int numberOfStudents (){
+        return students.size();
+    }
+
+    private void printStuFav (StringBuilder sb, int key){
+        Collection<Restaurant> favs = students.get(key).favorites();
+        List<Integer> favs_ids = favs.stream()
+                .sorted(Comparator.naturalOrder())
+                .map(res -> ((RestaurantImpl)res).getId()).collect(Collectors.toList());
+        String favStr =  Arrays.toString(favs_ids.toArray());
+        favStr = favStr.substring(1,favStr.length() - 1);
+        sb.append(key + " -> " + favStr + ".").append(System.getProperty("line.separator"));
+    }
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        String stuStr = students.keySet().stream().sorted().collect(Collectors.toList()).toString();
+        stuStr = stuStr.substring(1,stuStr.length()-1);
+        sb.append("Registered students: " + stuStr + ".").append(System.getProperty("line.separator"));
+        String resStr = restaurants.keySet().stream().sorted().collect(Collectors.toList()).toString();
+        resStr = resStr.substring(1,resStr.length()-1);
+        sb.append("Registered restaurants: " + resStr + ".").append(System.getProperty("line.separator"));
+        sb.append("Students:").append(System.getProperty("line.separator"));
+        students.keySet().stream().sorted(Comparator.naturalOrder()).forEachOrdered(key-> printStuFav(sb,key));
+        sb.append("End students").append(System.getProperty("line.separator"));
+        String str = sb.toString();
+        str = str.substring(0, str.length()-2);
+        return str + ".";
     }
 }

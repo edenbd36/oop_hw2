@@ -126,8 +126,9 @@ public class main {
             if(h.getRecommendation(h.getStudent(1),r4,1)) System.out.println("ok   6");
             if(!h.getRecommendation(h.getStudent(1),r6,1)) System.out.println("ok   7");
 
+            System.out.println(h.toString());
 
-        }catch (Exception e){
+        }catch (Exception e){ System.out.println("ERROR" + e.getClass());
         }
 
         try{
@@ -155,5 +156,14 @@ public class main {
         } catch (Exception e){
             System.out.println("OK 5");
         }
+        //HungryStudentImpl s1 = new HungryStudentImpl(1, "s1");
+        try{
+            h.joinNetwork(1, "s1");
+            HungryStudent s1 = h.getStudent(1);
+            Restaurant r1 = h.getRestaurant(1);
+            r1.rate(s1,5);
+            s1.favorite(r1);
+        } catch (Exception e){System.out.println("ERR: " + e.getClass());}
+        System.out.println(h.toString());
     }
 }
