@@ -3,7 +3,6 @@ package OOP.Solution;
 import OOP.Provided.HungryStudent;
 import OOP.Provided.Restaurant;
 import OOP.Provided.HamburgerNetwork;
-import com.sun.org.apache.regexp.internal.RE;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,12 +38,12 @@ public class HamburgerNetworkImpl implements HamburgerNetwork {
 
     @Override
     public Collection<HungryStudent> registeredStudents() {
-        return null;
+        return students.values() ;
     }
 
     @Override
     public Collection<Restaurant> registeredRestaurants() {
-        return null;
+        return restaurants.values();
     }
 
     @Override
