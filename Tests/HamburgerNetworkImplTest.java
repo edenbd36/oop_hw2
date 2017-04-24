@@ -17,7 +17,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.testng.AssertJUnit.*;
+import static org.junit.Assert.*;
+//import static org.testng.AssertJUnit.*;
+
 
 /**
  * Created by danie_000 on 4/21/2017.
@@ -1070,7 +1072,7 @@ public class HamburgerNetworkImplTest {
                             "3 -> [1, 2, 4].\n" +
                             "4 -> [1, 2, 3, 5].\n" +
                             "5 -> [4].\n" +
-                            "End students.\n"
+                            "End students."
                     , network.toString());
         } catch (StudentNotInSystemException | ConnectionAlreadyExistsException | SameStudentException e) {
             fail("Shouldn't be an error");

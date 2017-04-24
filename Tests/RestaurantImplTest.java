@@ -11,7 +11,8 @@ import org.junit.Test;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.testng.AssertJUnit.*;
+import static org.junit.Assert.*;
+//import static org.testng.AssertJUnit.*;
 
 /**
  * Created by danie_000 on 4/20/2017.
@@ -198,23 +199,23 @@ public class RestaurantImplTest {
         assertEquals("Restaurant: BBB.\n" +
                 "Id: 4.\n" +
                 "Distance: 5.\n" +
-                "Menu: Cola, French Fries, Steak.\n", r1.toString());
+                "Menu: Cola, French Fries, Steak.", r1.toString());
         assertEquals("Restaurant: PizzaHut.\n" +
                 "Id: 3.\n" +
                 "Distance: 8.\n" +
-                "Menu: Cola, Juice, Pizza, Salad.\n", r2.toString());
+                "Menu: Cola, Juice, Pizza, Salad.", r2.toString());
         assertEquals("Restaurant: IceCreamStore.\n" +
                 "Id: 10.\n" +
                 "Distance: 4.\n" +
-                "Menu: Apple, Cherry, Chocolate, Honey, Lemon, Strawberry, Vanilla.\n", r3.toString());
+                "Menu: Apple, Cherry, Chocolate, Honey, Lemon, Strawberry, Vanilla.", r3.toString());
         assertEquals("Restaurant: EmptyStore.\n" +
                 "Id: 7.\n" +
                 "Distance: 10.\n" +
-                "Menu: .\n", r4.toString());
+                "Menu: .", r4.toString());
         assertEquals("Restaurant: DominoPizza.\n" +
                 "Id: 2.\n" +
                 "Distance: 20.\n" +
-                "Menu: Cola, Juice, Pizza, Salad.\n", r5.toString());
+                "Menu: Cola, Juice, Pizza, Salad.", r5.toString());
         System.out.println("Restaurant::toString TEST SUCCESSFUL");
     }
 

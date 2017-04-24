@@ -86,16 +86,14 @@ public class HungryStudentImpl implements HungryStudent {
 
     @Override
     public String toString() {
-        Comparator<Restaurant> byName = (r1,r2) -> {
-            return ((RestaurantImpl)r1).getName().compareTo(((RestaurantImpl)r2).getName());
-        };
+        Comparator<Restaurant> byName = Comparator.comparing(r -> ((RestaurantImpl) r).getName());
         StringBuilder sb = new StringBuilder();
-        sb.append("Hungry student: " + name + ".").append(System.getProperty("line.separator"));
-        sb.append("Id: " + id + ".").append(System.getProperty("line.separator"));
+        sb.append("Hungry student: " + name + ".").append("\n");
+        sb.append("Id: " + id + ".").append("\n");
         sb.append("Favorites: ");
         restaurants.stream().sorted(byName).forEach(o-> sb.append(((RestaurantImpl)o).getName() + ", "));
         String str = sb.toString();
-        str = str.substring(0, str.length()-2);
+        if(!restaurants.isEmpty()) str = str.substring(0, str.length()-2);
         return str + ".";
     }
 

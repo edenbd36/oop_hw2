@@ -8,6 +8,7 @@ import OOP.Provided.Restaurant;
 import OOP.Provided.Restaurant.RateRangeException;
 import OOP.Solution.HungryStudentImpl;
 import OOP.Solution.RestaurantImpl;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,14 +17,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
 import static org.junit.Assert.*;
 //import static org.testng.AssertJUnit.*;
 
 /**
  * Created by danie_000 on 4/20/2017.
  */
-public class HungryStudentImplTest {
+public class HungryStudentImplTest3 {
     private static Set<String> menu1;
     private static Set<String> menu2;
     private static Set<String> menu3;
@@ -81,39 +81,59 @@ public class HungryStudentImplTest {
             s1.favorite(r1);
             fail("Should be an unrated exception");
         } catch (UnratedFavoriteRestaurantException e) {
-
+            //everything is fine continue
         }
         try {
+            //if you get compile error then rate should return this
             r1.rate(s1, 1).rate(s2, 2).rate(s3, 3).rate(s4, 4).rate(s5, 5);
+            //we add the restaurant it should be find here
             s1.favorite(r1);
         } catch (RateRangeException | UnratedFavoriteRestaurantException e) {
             fail("Rates are legal and no case of favorite(r) where r is not rated by student, weird....");
         }
+
+
         System.out.println("HungryStudent::favorite TEST SUCCESSFUL :)");
     }
 
     @Test
     public void favorites() throws Exception {
+        r1.rate(s1, 1);
+        s1.favorite(r1);
+        Restaurant r1_mock = new RestaurantImpl(4, "BBB2", 10, menu1);
+        s1.favorite(r1_mock);
+        //no duplication is allowed
+        assertEquals(s1.favorites().size(), 1);
+        //validate that r1 was not overridden- if you fail here than you have a problem in favorite method.
+        Restaurant findR1 = s1.favorites().stream().filter(r -> r.equals(r1)).collect(Collectors.toList()).get(0);
+       if(findR1==r1_mock)
+            Assert.fail("r1_mock overriden r1");
+        //all other collections should be empty
+        assertTrue(s2.favorites().isEmpty());
         assertTrue(s3.favorites().isEmpty());
         assertTrue(s4.favorites().isEmpty());
         assertTrue(s5.favorites().isEmpty());
         try {
+            //james rating PizzaHut with 2
             r2.rate(s1, 3).rate(s2, 2).rate(s3, 3).rate(s4, 3);
             assertTrue(s2.favorites().isEmpty());
+            //unnecessary tests
             assertFalse(s2.favorites().contains(r3));
             assertFalse(s2.favorites().contains(r5));
             assertFalse(s2.favorites().contains(r4));
+            //PizzaHut is James favorite
             s2.favorite(r2);
             assertTrue(s2.favorites().size() == 1);
             assertTrue(s2.favorites().contains(r2));
             s2.favorite(r2);
             assertTrue(s2.favorites().size() == 1);
             assertTrue(s2.favorites().contains(r2));
+            //james rating IceCreamStore with 4
             r3.rate(s2, 4);
+            //james add it to his favorites
             s2.favorite(r3);
             assertTrue(s2.favorites().size() == 2);
             assertTrue(s2.favorites().contains(r3));
-
 
         } catch (RateRangeException | UnratedFavoriteRestaurantException e) {
             fail("Rates are legal and no case of favorite(r) where r is not rated by student, weird....");
@@ -124,22 +144,26 @@ public class HungryStudentImplTest {
 
     @Test
     public void addFriend() throws Exception {
+
         try {
             s1.addFriend(s1);
-            fail("Should be same student, forever alone friend-zone!! :(");
+            fail("Friendship cannot be reflexive");
         } catch (SameStudentException e) {
 
         }
         s1.addFriend(s2);
+        if (s1.addFriend(s3) != s1)
+            fail("addFriend should return this!");
         try {
             s2.addFriend(s1);
         } catch (ConnectionAlreadyExistsException e) {
-            fail("Friendship in part A is not necessarily mutual");
+            fail("Friendship should not be symmetric here");
         }
         try {
             s1.addFriend(s2);
-            fail("Jack already has a friend :)");
+            fail("Jack already has that friend!");
         } catch (ConnectionAlreadyExistsException e) {
+            //an exception should be trowed
         }
         System.out.println("HungryStudent::addFriend TEST SUCCESSFUL :)");
 
@@ -147,28 +171,28 @@ public class HungryStudentImplTest {
 
     @Test
     public void getFriends() throws Exception {
+        assertTrue(s1.getFriends().isEmpty());
+        assertTrue(s2.getFriends().isEmpty());
         assertTrue(s3.getFriends().isEmpty());
-        assertFalse(s1.getFriends().contains(s1));
-        assertFalse(s2.getFriends().contains(s2));
-        assertFalse(s3.getFriends().contains(s3));
-        assertFalse(s4.getFriends().contains(s4));
-        assertFalse(s5.getFriends().contains(s5));
-
+        assertTrue(s4.getFriends().isEmpty());
+        assertTrue(s5.getFriends().isEmpty());
 
         try {
             s1.addFriend(s2);
             // To make sure s1 and s2 are friends
         } catch (ConnectionAlreadyExistsException e) {
-
+            fail("no exception should be here");
         }
         assertEquals(1, s1.getFriends().size());
         assertTrue(s1.getFriends().contains(s2));
+        //should not be symmetric
         assertFalse(s2.getFriends().contains(s1));
         assertTrue(s2.getFriends().isEmpty());
         try {
+            //now s1 will have all the friends he can get (4)
             s1.addFriend(s3).addFriend(s4).addFriend(s5);
         } catch (ConnectionAlreadyExistsException e) {
-
+            fail("no exception should be here");
         }
         assertEquals(4, s1.getFriends().size());
         assertTrue(s2.getFriends().isEmpty());
@@ -208,13 +232,13 @@ public class HungryStudentImplTest {
             s5.favorite(r1).favorite(r2).favorite(r4).favorite(r5);
 
         } catch (RateRangeException | UnratedFavoriteRestaurantException e) {
-            fail("All cool! weird....");
+            fail("No exception should have been thrown here");
         }
-      //  System.out.println(r1.averageRating()+"\n");
-      //  System.out.println(r2.averageRating()+"\n");
-      //  System.out.println(r3.averageRating()+"\n");
-      //  System.out.println(r4.averageRating()+"\n");
-      //  System.out.println(r5.averageRating()+"\n");
+        //  System.out.println(r1.averageRating()+"\n");
+        //  System.out.println(r2.averageRating()+"\n");
+        //  System.out.println(r3.averageRating()+"\n");
+        //  System.out.println(r4.averageRating()+"\n");
+        //  System.out.println(r5.averageRating()+"\n");
 
         List<Restaurant> list1;
         List<Restaurant> list2;
@@ -557,6 +581,7 @@ public class HungryStudentImplTest {
         /*
          * Id is the same, however can a student become a restaurant one day? ^^
          */
+        assertFalse(s1.equals(null));
         assertFalse(s4.equals(r1));
 
         assertTrue(s1.equals(s1));
@@ -564,6 +589,10 @@ public class HungryStudentImplTest {
         assertTrue(s3.equals(s3));
         assertTrue(s4.equals(s4));
         assertTrue(s5.equals(s5));
+
+        HungryStudent s6 = new HungryStudentImpl(51, "Aviad");
+        assertTrue(s5.equals(s6));
+        assertTrue(s6.equals(s5));
 
         assertFalse(s1.equals(s2));
         assertFalse(s2.equals(s1));
@@ -638,6 +667,9 @@ public class HungryStudentImplTest {
         assertTrue(s3.compareTo(s3) == 0);
         assertTrue(s4.compareTo(s4) == 0);
         assertTrue(s5.compareTo(s5) == 0);
+        HungryStudent s5_mock = new HungryStudentImpl(51, "Aviad");
+        assertTrue(s5.compareTo(s5_mock) == 0);
+        assertTrue(s5_mock.compareTo(s5) == 0);
 
         assertTrue(s1.compareTo(s2) > 0);
         assertTrue(s2.compareTo(s1) < 0);

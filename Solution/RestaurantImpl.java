@@ -82,13 +82,13 @@ public class RestaurantImpl implements Restaurant{
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("Restaurant: " + name + ".").append(System.getProperty("line.separator"));
-        sb.append("Id: " + id + ".").append(System.getProperty("line.separator"));
-        sb.append("Distance: " + distance + ".").append(System.getProperty("line.separator"));
+        sb.append("Restaurant: " + name + ".").append("\n");
+        sb.append("Id: " + id + ".").append("\n");
+        sb.append("Distance: " + distance + ".").append("\n");
         sb.append("Menu: ");
         menu.stream().sorted().forEach(o-> sb.append(o + ", "));
         String str = sb.toString();
-        str = str.substring(0, str.length()-2);
+        if(!menu.isEmpty()) str = str.substring(0, str.length()-2);
         return str + ".";
     }
 

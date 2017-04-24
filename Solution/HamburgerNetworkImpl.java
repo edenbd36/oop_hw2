@@ -148,6 +148,7 @@ public class HamburgerNetworkImpl implements HamburgerNetwork {
             thisLevel.clear();
             thisLevel.addAll(nextLevel);
             nextLevel.clear();
+            if(thisLevel.isEmpty()) return false;
         }
         return false;
     }
@@ -181,9 +182,8 @@ public class HamburgerNetworkImpl implements HamburgerNetwork {
         sb.append("Registered restaurants: " + resStr + ".\n");
         sb.append("Students:\n");
         students.keySet().stream().sorted(Comparator.naturalOrder()).forEachOrdered(key-> printStuFav(sb,key));
-        sb.append("End students.").append("\n");
+        sb.append("End students.");
         String str = sb.toString();
-        str = str.substring(0, str.length()-2);
-        return str + ".";
+        return str;
     }
 }
