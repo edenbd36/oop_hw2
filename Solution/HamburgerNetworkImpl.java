@@ -66,12 +66,17 @@ public class HamburgerNetworkImpl implements HamburgerNetwork {
         if(s1.equals(s2)){
             throw new HungryStudent.SameStudentException();
         }
-        students.remove(((HungryStudentImpl) s1).getId());
-        students.remove(((HungryStudentImpl) s2).getId());
+        HungryStudentImpl s1Impl = (HungryStudentImpl) s1;
+        HungryStudentImpl s2Impl = (HungryStudentImpl) s2;
+        if(s1Impl.isFriendWith(s2Impl)){
+            throw new HungryStudent.ConnectionAlreadyExistsException();
+        }
+        students.remove(s1Impl.getId());
+        students.remove(s2Impl.getId());
         s1.addFriend(s2);
         s2.addFriend(s1);
-        students.put(((HungryStudentImpl) s1).getId(), s1);
-        students.put(((HungryStudentImpl) s2).getId(), s2);
+        students.put(s1Impl.getId(), s1);
+        students.put(s2Impl.getId(), s2);
         return this;
     }
 
@@ -80,7 +85,8 @@ public class HamburgerNetworkImpl implements HamburgerNetwork {
         if (!students.containsKey(((HungryStudentImpl)s).getId())) throw new HungryStudent.StudentNotInSystemException();
         Comparator<Restaurant> byRate = (r1, r2) -> {
             double rating = r1.averageRating() - r2.averageRating();
-            if (rating != 0) return ((int) rating) * (-1);
+            if (rating < 0) return 1;
+            if (rating > 0) return -1;
             int dist = r1.distance() - r2.distance();
             if (dist != 0) return dist;
             return r1.compareTo(r2);
@@ -100,7 +106,8 @@ public class HamburgerNetworkImpl implements HamburgerNetwork {
             int dist = r1.distance() - r2.distance();
             if (dist != 0) return dist;
             double rating = r1.averageRating() - r2.averageRating();
-            if (rating != 0) return ((int) rating) * (-1);
+            if (rating < 0) return 1;
+            if (rating > 0) return -1;
             return r1.compareTo(r2);
         };
         LinkedHashSet<Restaurant> res = new LinkedHashSet<>();
@@ -120,18 +127,27 @@ public class HamburgerNetworkImpl implements HamburgerNetwork {
             throw new ImpossibleConnectionException();
         }
         int counter = 0;
-        if(((HungryStudentImpl)s).isFavorite(r)) return true;
-        counter++;
-        HashSet<Integer> visit = new HashSet<>();
-        while(counter <= t){
-            for(HungryStudent f : s.getFriends()){
-                HungryStudentImpl fImpl = (HungryStudentImpl)f;
-                if(visit.contains(fImpl.getId())) continue;
-                visit.add(fImpl.getId());
-                if(fImpl.isFavorite(r)) return true;
-            }
-            counter++;
+        HashSet<Integer> visited = new HashSet<>();
+        Set<HungryStudent> nextLevel = new HashSet<>();
+        Set<HungryStudent> thisLevel = new HashSet<>();
+        thisLevel.add(s);
 
+        while(counter <= t ) { // iterate levels
+            //check this level:
+            for(HungryStudent current : thisLevel) {
+                HungryStudentImpl currentImpl = (HungryStudentImpl) current;
+                if (visited.contains(currentImpl.getId())) continue;
+                visited.add(currentImpl.getId());
+                if (currentImpl.isFavorite(r)) return true;
+            }
+            //creating next level
+            for (HungryStudent student : thisLevel){
+                nextLevel.addAll(student.getFriends());
+            }
+            counter ++;
+            thisLevel.clear();
+            thisLevel.addAll(nextLevel);
+            nextLevel.clear();
         }
         return false;
     }
@@ -145,13 +161,13 @@ public class HamburgerNetworkImpl implements HamburgerNetwork {
     }
 
     private void printStuFav (StringBuilder sb, int key){
-        Collection<Restaurant> favs = students.get(key).favorites();
+        Collection<HungryStudent> favs = students.get(key).getFriends();
         List<Integer> favs_ids = favs.stream()
                 .sorted(Comparator.naturalOrder())
-                .map(res -> ((RestaurantImpl)res).getId()).collect(Collectors.toList());
+                .map(res -> ((HungryStudentImpl)res).getId()).collect(Collectors.toList());
         String favStr =  Arrays.toString(favs_ids.toArray());
-        favStr = favStr.substring(1,favStr.length() - 1);
-        sb.append(key + " -> " + favStr + ".").append(System.getProperty("line.separator"));
+        //favStr = favStr.substring(1,favStr.length() - 1);
+        sb.append(key + " -> " + favStr + ".\n");
     }
     @Override
     public String toString() {
@@ -159,13 +175,13 @@ public class HamburgerNetworkImpl implements HamburgerNetwork {
 
         String stuStr = students.keySet().stream().sorted().collect(Collectors.toList()).toString();
         stuStr = stuStr.substring(1,stuStr.length()-1);
-        sb.append("Registered students: " + stuStr + ".").append(System.getProperty("line.separator"));
+        sb.append("Registered students: " + stuStr + ".\n");
         String resStr = restaurants.keySet().stream().sorted().collect(Collectors.toList()).toString();
         resStr = resStr.substring(1,resStr.length()-1);
-        sb.append("Registered restaurants: " + resStr + ".").append(System.getProperty("line.separator"));
-        sb.append("Students:").append(System.getProperty("line.separator"));
+        sb.append("Registered restaurants: " + resStr + ".\n");
+        sb.append("Students:\n");
         students.keySet().stream().sorted(Comparator.naturalOrder()).forEachOrdered(key-> printStuFav(sb,key));
-        sb.append("End students").append(System.getProperty("line.separator"));
+        sb.append("End students.").append("\n");
         String str = sb.toString();
         str = str.substring(0, str.length()-2);
         return str + ".";

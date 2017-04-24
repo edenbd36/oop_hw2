@@ -38,6 +38,10 @@ public class HungryStudentImpl implements HungryStudent {
         return restaurants;
     }
 
+    public boolean isFriendWith(HungryStudent other){
+        return friends.contains(other);
+    }
+
     @Override
     public HungryStudent addFriend(HungryStudent s) throws SameStudentException, ConnectionAlreadyExistsException {
         if (s.equals(this)) {
@@ -59,7 +63,8 @@ public class HungryStudentImpl implements HungryStudent {
     public Collection<Restaurant> favoritesByRating(int rLimit) {
         Comparator<Restaurant> byRate = (r1, r2) -> {
             double rating = r1.averageRating() - r2.averageRating();
-            if (rating != 0) return ((int) rating) * (-1);
+            if (rating > 0) return -1;
+            if (rating < 0) return 1;
             int dist = r1.distance() - r2.distance();
             if (dist != 0) return dist;
             return r1.compareTo(r2);
@@ -81,11 +86,14 @@ public class HungryStudentImpl implements HungryStudent {
 
     @Override
     public String toString() {
+        Comparator<Restaurant> byName = (r1,r2) -> {
+            return ((RestaurantImpl)r1).getName().compareTo(((RestaurantImpl)r2).getName());
+        };
         StringBuilder sb = new StringBuilder();
         sb.append("Hungry student: " + name + ".").append(System.getProperty("line.separator"));
         sb.append("Id: " + id + ".").append(System.getProperty("line.separator"));
         sb.append("Favorites: ");
-        restaurants.stream().sorted().forEach(o-> sb.append(((RestaurantImpl)o).getName() + ", "));
+        restaurants.stream().sorted(byName).forEach(o-> sb.append(((RestaurantImpl)o).getName() + ", "));
         String str = sb.toString();
         str = str.substring(0, str.length()-2);
         return str + ".";
