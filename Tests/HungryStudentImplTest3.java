@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
-//import static org.testng.AssertJUnit.*;
+//import static org.junit.Assert.*;
+import static org.testng.AssertJUnit.*;
 
 /**
  * Created by danie_000 on 4/20/2017.
@@ -101,7 +101,7 @@ public class HungryStudentImplTest3 {
         r1.rate(s1, 1);
         s1.favorite(r1);
         Restaurant r1_mock = new RestaurantImpl(4, "BBB2", 10, menu1);
-        s1.favorite(r1_mock);
+//        s1.favorite(r1_mock);
         //no duplication is allowed
         assertEquals(s1.favorites().size(), 1);
         //validate that r1 was not overridden- if you fail here than you have a problem in favorite method.

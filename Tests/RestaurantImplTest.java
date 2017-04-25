@@ -11,8 +11,8 @@ import org.junit.Test;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.*;
-//import static org.testng.AssertJUnit.*;
+//import static org.junit.Assert.*;
+import static org.testng.AssertJUnit.*;
 
 /**
  * Created by danie_000 on 4/20/2017.

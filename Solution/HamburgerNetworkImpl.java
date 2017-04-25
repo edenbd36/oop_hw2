@@ -117,6 +117,7 @@ public class HamburgerNetworkImpl implements HamburgerNetwork {
 
     @Override
     public boolean getRecommendation(HungryStudent s, Restaurant r, int t) throws HungryStudent.StudentNotInSystemException, Restaurant.RestaurantNotInSystemException, ImpossibleConnectionException {
+        System.out.println("in recommendation, restaurant = "+ ((RestaurantImpl)r).getName());
         if(!students.containsKey(((HungryStudentImpl)s).getId())){
             throw new HungryStudent.StudentNotInSystemException();
         }
@@ -149,6 +150,12 @@ public class HamburgerNetworkImpl implements HamburgerNetwork {
             thisLevel.addAll(nextLevel);
             nextLevel.clear();
             if(thisLevel.isEmpty()) return false;
+            List<Integer> thisLevelIds = thisLevel.stream().map(res -> ((HungryStudentImpl)res).getId()).collect(Collectors.toList());
+            if(visited.containsAll(thisLevelIds)) return false;
+            //boolean visitedAll = false;
+            //for(HungryStudent stu: thisLevel){
+              //  if(visited.c((HungryStudentImpl)stu).getId())
+            //}
         }
         return false;
     }

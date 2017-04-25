@@ -17,8 +17,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-import static org.junit.Assert.*;
-//import static org.testng.AssertJUnit.*;
+//import static org.junit.Assert.*;
+import static org.testng.AssertJUnit.*;
 
 /**
  * Created by danie_000 on 4/20/2017.
