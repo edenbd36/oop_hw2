@@ -35,7 +35,9 @@ public class HungryStudentImpl implements HungryStudent {
 
     @Override
     public Collection<Restaurant> favorites() {
-        return restaurants;
+        List<Restaurant> result = new ArrayList<>();
+        result.addAll(restaurants);
+        return result;
     }
 
     public boolean isFriendWith(HungryStudent other){
@@ -56,7 +58,9 @@ public class HungryStudentImpl implements HungryStudent {
 
     @Override
     public Set<HungryStudent> getFriends() {
-        return friends;
+        Set<HungryStudent> result = new HashSet<>();
+        result.addAll(friends);
+        return result;
     }
 
     @Override
